@@ -1,0 +1,1337 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ROSSO Corp | Rosa Gaseosa</title>
+  <meta name="description" content="Una experiencia interactiva de ROSSO Corp: elige como te sientes, recibe una respuesta y sigue bajando por el anuncio.">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #101820;
+      --night: #07113f;
+      --blue: #063ca4;
+      --cyan: #45c0e8;
+      --yellow: #f7df00;
+      --pink: #ec1070;
+      --orange: #ff4318;
+      --green: #19c653;
+      --white: #ffffff;
+      --line: rgba(16, 24, 32, .18);
+      --shadow: 0 22px 54px rgba(7, 17, 63, .24);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial Black, Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(247, 223, 0, .13) 0 12.5%, transparent 12.5% 25%, rgba(69, 192, 232, .14) 25% 37.5%, transparent 37.5% 50%, rgba(236, 16, 112, .13) 50% 62.5%, transparent 62.5% 75%, rgba(25, 198, 83, .12) 75% 87.5%, transparent 87.5% 100%),
+        #fff;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px clamp(16px, 4vw, 52px);
+      background: rgba(255, 255, 255, .92);
+      border-bottom: 4px solid var(--ink);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-logo {
+      width: min(280px, 48vw);
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--night);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .nav-links a {
+      padding: 9px 11px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+    }
+
+    .nav-links a:hover {
+      border-color: var(--night);
+      background: var(--yellow);
+    }
+
+    .score-pill {
+      min-width: 116px;
+      border: 3px solid var(--night);
+      border-radius: 8px;
+      padding: 9px 12px;
+      background: var(--pink);
+      color: var(--white);
+      text-align: center;
+      text-transform: uppercase;
+      box-shadow: 5px 5px 0 var(--night);
+    }
+
+    .hero {
+      position: relative;
+      min-height: calc(100vh - 72px);
+      display: grid;
+      grid-template-columns: 1.02fr .98fr;
+      gap: clamp(24px, 4vw, 56px);
+      align-items: center;
+      padding: clamp(30px, 6vw, 76px) clamp(16px, 4vw, 56px) clamp(48px, 7vw, 92px);
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: auto -8vw -18vw auto;
+      width: min(720px, 92vw);
+      aspect-ratio: 1;
+      background: url("rosso-assets/Asset_2.png") center / contain no-repeat;
+      opacity: .94;
+      transform: rotate(-8deg);
+      z-index: -1;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      border: 3px solid var(--night);
+      border-radius: 8px;
+      padding: 8px 11px;
+      background: var(--yellow);
+      color: var(--night);
+      text-transform: uppercase;
+      box-shadow: 5px 5px 0 var(--night);
+    }
+
+    .spark {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    h1 {
+      max-width: 10ch;
+      margin: 0;
+      color: var(--night);
+      font-size: clamp(50px, 8vw, 112px);
+      line-height: .88;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      text-shadow: 5px 5px 0 var(--yellow), 10px 10px 0 var(--pink);
+    }
+
+    .lead {
+      max-width: 650px;
+      margin: 24px 0 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #15232b;
+      font-size: clamp(18px, 2vw, 25px);
+      line-height: 1.43;
+      font-weight: 900;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      border: 3px solid var(--night);
+      border-radius: 8px;
+      padding: 13px 18px;
+      background: var(--white);
+      color: var(--night);
+      text-transform: uppercase;
+      box-shadow: 5px 5px 0 var(--night);
+      cursor: pointer;
+    }
+
+    .button.primary {
+      background: var(--pink);
+      color: var(--white);
+    }
+
+    .hero-art {
+      position: relative;
+      min-height: 530px;
+    }
+
+    .corp-badge {
+      width: min(580px, 88vw);
+      max-width: 100%;
+      display: block;
+      margin-left: auto;
+      filter: drop-shadow(0 22px 28px rgba(7, 17, 63, .24));
+    }
+
+    .float {
+      position: absolute;
+      display: block;
+      filter: drop-shadow(0 18px 18px rgba(7, 17, 63, .2));
+      animation: bob 4.5s ease-in-out infinite;
+    }
+
+    .float.hotline {
+      width: min(440px, 72vw);
+      left: -5%;
+      bottom: 4%;
+      transform: rotate(-3deg);
+    }
+
+    .float.offer {
+      width: min(390px, 64vw);
+      right: 0;
+      top: 6%;
+      animation-delay: -1.4s;
+    }
+
+    .float.sparkle {
+      width: 110px;
+      right: 10%;
+      bottom: 4%;
+      animation-delay: -2s;
+    }
+
+    @keyframes bob {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -12px; }
+    }
+
+    .brand-strip {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      min-height: 74px;
+      border-block: 4px solid var(--night);
+    }
+
+    .brand-strip span:nth-child(1) { background: #df64ad; }
+    .brand-strip span:nth-child(2) { background: #e40658; }
+    .brand-strip span:nth-child(3) { background: #f7df00; }
+    .brand-strip span:nth-child(4) { background: #ff4318; }
+    .brand-strip span:nth-child(5) { background: #45c0e8; }
+    .brand-strip span:nth-child(6) { background: #063ca4; }
+    .brand-strip span:nth-child(7) { background: #07113f; }
+    .brand-strip span:nth-child(8) { background: #19c653; }
+
+    .ticker {
+      overflow: hidden;
+      border-bottom: 4px solid var(--night);
+      background: var(--night);
+      color: var(--white);
+      white-space: nowrap;
+    }
+
+    .ticker-track {
+      display: inline-flex;
+      gap: 34px;
+      padding: 13px 0;
+      font-size: clamp(18px, 2.8vw, 34px);
+      text-transform: uppercase;
+      animation: ticker 22s linear infinite;
+    }
+
+    .ticker-track span:nth-child(3n) {
+      color: var(--yellow);
+    }
+
+    .ticker-track span:nth-child(3n + 1) {
+      color: var(--cyan);
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .section {
+      padding: clamp(46px, 7vw, 94px) clamp(16px, 4vw, 56px);
+    }
+
+    .section.dark {
+      background:
+        linear-gradient(135deg, rgba(6, 60, 164, .96), rgba(7, 17, 63, .98)),
+        var(--night);
+      color: var(--white);
+    }
+
+    .section.orange {
+      background: var(--orange);
+      color: var(--white);
+      border-block: 4px solid var(--night);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      max-width: 840px;
+      margin: 0;
+      color: inherit;
+      font-size: clamp(34px, 5vw, 70px);
+      line-height: .92;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .section-head p {
+      max-width: 480px;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+      font-weight: 900;
+      color: rgba(16, 24, 32, .74);
+    }
+
+    .dark .section-head p,
+    .orange .section-head p {
+      color: rgba(255, 255, 255, .8);
+    }
+
+    .quiz {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .quiz-panel,
+    .result-card,
+    .path-card,
+    .reward-card,
+    .final-card {
+      border: 4px solid var(--night);
+      border-radius: 8px;
+      box-shadow: 8px 8px 0 var(--night);
+    }
+
+    .quiz-panel {
+      padding: 24px;
+      background: var(--white);
+    }
+
+    .quiz-panel h3,
+    .result-card h3,
+    .path-card h3,
+    .reward-card h3,
+    .final-card h3 {
+      margin: 0;
+      color: var(--night);
+      font-size: clamp(28px, 4vw, 50px);
+      line-height: .95;
+      text-transform: uppercase;
+    }
+
+    .quiz-options {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .quiz-option,
+    .choice {
+      border: 3px solid var(--night);
+      border-radius: 8px;
+      padding: 14px;
+      background: var(--yellow);
+      color: var(--night);
+      text-align: left;
+      text-transform: uppercase;
+      box-shadow: 5px 5px 0 var(--night);
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .quiz-option:hover,
+    .choice:hover {
+      transform: translate(-2px, -3px) rotate(-1deg);
+      box-shadow: 8px 8px 0 var(--night);
+    }
+
+    .quiz-option:nth-child(2) {
+      background: var(--cyan);
+      color: var(--white);
+    }
+
+    .quiz-option:nth-child(3) {
+      background: var(--pink);
+      color: var(--white);
+    }
+
+    .quiz-option:nth-child(4) {
+      background: var(--green);
+      color: var(--white);
+    }
+
+    .result-card {
+      position: relative;
+      min-height: 420px;
+      overflow: hidden;
+      padding: clamp(22px, 4vw, 34px);
+      background: var(--night);
+      color: var(--white);
+    }
+
+    .result-card::after {
+      content: "";
+      position: absolute;
+      right: -7%;
+      bottom: -16%;
+      width: min(440px, 70%);
+      aspect-ratio: 1;
+      background: url("rosso-assets/Asset_2.png") center / contain no-repeat;
+      transform: rotate(-10deg);
+    }
+
+    .result-content {
+      position: relative;
+      z-index: 2;
+      max-width: 620px;
+    }
+
+    .label {
+      display: inline-flex;
+      width: fit-content;
+      margin-bottom: 14px;
+      border: 3px solid var(--night);
+      border-radius: 8px;
+      padding: 7px 10px;
+      background: var(--yellow);
+      color: var(--night);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .result-card .label {
+      border-color: var(--white);
+    }
+
+    .result-card h3 {
+      color: var(--white);
+      text-shadow: 4px 4px 0 var(--pink);
+    }
+
+    .result-card p,
+    .reward-card p,
+    .final-card p,
+    .path-card p {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+      font-weight: 900;
+    }
+
+    .result-card p {
+      color: rgba(255, 255, 255, .82);
+      font-size: 19px;
+    }
+
+    .meter {
+      margin-top: 24px;
+      border: 3px solid var(--white);
+      border-radius: 999px;
+      padding: 4px;
+      background: rgba(255, 255, 255, .16);
+    }
+
+    .meter-bar {
+      width: 0%;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--yellow);
+      transition: width .25s ease;
+    }
+
+    .reward-pop {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      margin-top: 18px;
+      border: 3px solid var(--white);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--pink);
+      color: var(--white);
+      text-transform: uppercase;
+    }
+
+    .reward-pop.show {
+      display: flex;
+      animation: snap .28s ease both;
+    }
+
+    .reward-pop img {
+      width: 86px;
+      max-height: 62px;
+      object-fit: contain;
+    }
+
+    .audio-unlock {
+      display: none;
+      margin-top: 18px;
+      border: 4px solid var(--yellow);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--white);
+      color: var(--night);
+      box-shadow: 6px 6px 0 var(--pink);
+      animation: snap .28s ease both;
+    }
+
+    .audio-unlock.show {
+      display: grid;
+      gap: 10px;
+    }
+
+    .audio-unlock strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .audio-unlock span {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    .audio-link {
+      display: inline-flex;
+      justify-content: center;
+      width: fit-content;
+      border: 3px solid var(--night);
+      border-radius: 8px;
+      padding: 11px 13px;
+      background: var(--orange);
+      color: var(--white);
+      text-transform: uppercase;
+      box-shadow: 4px 4px 0 var(--night);
+    }
+
+    @keyframes snap {
+      from { transform: scale(.92) rotate(-2deg); opacity: 0; }
+      to { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    .path-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .curiosity-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .curiosity-card {
+      min-height: 330px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 4px solid var(--night);
+      border-radius: 8px;
+      padding: 20px;
+      background: var(--white);
+      color: var(--night);
+      box-shadow: 8px 8px 0 var(--night);
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .curiosity-card:nth-child(2) {
+      background: #fff0f7;
+    }
+
+    .curiosity-card:nth-child(3) {
+      background: #e9fbff;
+    }
+
+    .curiosity-card:hover {
+      transform: translate(-2px, -4px) rotate(-1deg);
+      box-shadow: 11px 11px 0 var(--night);
+    }
+
+    .curiosity-card img {
+      width: min(220px, 100%);
+      max-height: 100px;
+      object-fit: contain;
+      object-position: left center;
+      margin-bottom: 16px;
+    }
+
+    .curiosity-card p {
+      margin: 12px 0 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #334149;
+      line-height: 1.5;
+      font-weight: 900;
+    }
+
+    .curiosity-answer {
+      margin-top: 16px;
+      border: 3px solid var(--night);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--yellow);
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 900;
+      line-height: 1.45;
+      display: none;
+    }
+
+    .curiosity-card.open .curiosity-answer {
+      display: block;
+      animation: snap .28s ease both;
+    }
+
+    .path-card {
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px;
+      background: var(--white);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .path-card:hover {
+      transform: translate(-2px, -4px) rotate(-1deg);
+      box-shadow: 11px 11px 0 var(--night);
+    }
+
+    .path-card:nth-child(2) {
+      background: #e9fbff;
+    }
+
+    .path-card:nth-child(3) {
+      background: #fff0f7;
+    }
+
+    .path-card:nth-child(4) {
+      background: #fff9ba;
+    }
+
+    .path-sticker {
+      width: 100%;
+      max-height: 96px;
+      object-fit: contain;
+      object-position: left center;
+      margin-bottom: 18px;
+    }
+
+    .path-card p {
+      margin: 12px 0 0;
+      color: #334149;
+    }
+
+    .arrow {
+      margin-top: 22px;
+      color: var(--pink);
+      font-size: 34px;
+    }
+
+    .choice-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .choice {
+      background: var(--white);
+    }
+
+    .choice.active {
+      background: var(--yellow);
+      color: var(--night);
+    }
+
+    .tunnel {
+      display: none;
+      grid-template-columns: .92fr 1.08fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .tunnel.active {
+      display: grid;
+    }
+
+    .tunnel-stage {
+      position: relative;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      overflow: hidden;
+      border: 4px solid var(--night);
+      border-radius: 8px;
+      padding: 26px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(7, 17, 63, .9)),
+        var(--blue);
+      box-shadow: 8px 8px 0 var(--night);
+    }
+
+    .tunnel-bg {
+      position: absolute;
+      inset: auto -6% 8% auto;
+      width: min(520px, 86%);
+      max-height: 62%;
+      object-fit: contain;
+      opacity: .86;
+      filter: drop-shadow(0 18px 20px rgba(0, 0, 0, .24));
+    }
+
+    .tunnel-stage h3,
+    .tunnel-stage p,
+    .tunnel-stage .label,
+    .tunnel-stage .micro-actions {
+      position: relative;
+      z-index: 2;
+    }
+
+    .tunnel-stage h3 {
+      max-width: 610px;
+      margin: 0;
+      color: var(--white);
+      font-size: clamp(32px, 5vw, 62px);
+      line-height: .94;
+      text-transform: uppercase;
+      text-shadow: 4px 4px 0 var(--night);
+    }
+
+    .tunnel-stage p {
+      max-width: 640px;
+      font-family: Arial, Helvetica, sans-serif;
+      color: rgba(255, 255, 255, .84);
+      line-height: 1.55;
+      font-weight: 900;
+    }
+
+    .micro-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .micro-button {
+      border: 3px solid var(--white);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: var(--pink);
+      color: var(--white);
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .tunnel-panel {
+      display: grid;
+      gap: 14px;
+    }
+
+    .reward-card {
+      padding: 20px;
+      background: var(--white);
+      color: var(--ink);
+    }
+
+    .reward-card img {
+      width: min(280px, 100%);
+      max-height: 110px;
+      object-fit: contain;
+      object-position: left center;
+      margin-bottom: 12px;
+    }
+
+    .reward-card p {
+      margin-bottom: 0;
+      color: #344147;
+    }
+
+    .final-grid {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 18px;
+    }
+
+    .final-card {
+      padding: clamp(22px, 4vw, 34px);
+      background: var(--white);
+    }
+
+    .final-card.feature {
+      background: var(--yellow);
+    }
+
+    .final-card img {
+      width: min(470px, 100%);
+      display: block;
+      margin-bottom: 18px;
+    }
+
+    .final-card p {
+      color: #344147;
+      font-size: 17px;
+    }
+
+    .cta {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+      padding: clamp(32px, 5vw, 62px) clamp(16px, 4vw, 56px);
+      background: var(--pink);
+      color: var(--white);
+      border-top: 4px solid var(--night);
+    }
+
+    .cta h2 {
+      text-shadow: 4px 4px 0 var(--night);
+    }
+
+    .cta p {
+      max-width: 660px;
+      margin: 14px 0 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.55;
+      font-weight: 900;
+    }
+
+    .cta-sticker {
+      width: min(250px, 38vw);
+      filter: drop-shadow(0 16px 18px rgba(7, 17, 63, .18));
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 40;
+      max-width: 360px;
+      transform: translateY(120%);
+      opacity: 0;
+      border: 4px solid var(--white);
+      border-radius: 8px;
+      padding: 14px 16px;
+      background: var(--night);
+      color: var(--white);
+      box-shadow: 7px 7px 0 var(--pink);
+      transition: transform .24s ease, opacity .24s ease;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 900;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .burst {
+      position: fixed;
+      z-index: 50;
+      pointer-events: none;
+      font-size: 18px;
+      color: var(--yellow);
+      text-shadow: 2px 2px 0 var(--night);
+      animation: burst 850ms ease-out forwards;
+    }
+
+    @keyframes burst {
+      0% { transform: translateY(0) scale(.85); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-74px) scale(1.2) rotate(-8deg); opacity: 0; }
+    }
+
+    @media (max-width: 1060px) {
+      .hero,
+      .quiz,
+      .curiosity-grid,
+      .path-grid,
+      .tunnel,
+      .final-grid,
+      .cta {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        display: grid;
+      }
+
+      .hero-art {
+        min-height: 470px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav {
+        align-items: flex-start;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .score-pill,
+      .button,
+      .choice,
+      .quiz-option {
+        width: 100%;
+      }
+
+      .hero-actions,
+      .choice-row,
+      .micro-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .hero-art {
+        min-height: 380px;
+      }
+
+      .float.hotline {
+        left: 0;
+        bottom: 0;
+      }
+
+      .float.offer {
+        right: -4%;
+        top: 12%;
+      }
+
+      .brand-strip {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Navegacion principal">
+    <a href="#inicio" aria-label="Ir al inicio">
+      <img class="nav-logo" src="rosso-assets/Asset_1.png" alt="01 800 ROSSO">
+    </a>
+    <div class="nav-links">
+      <a href="#prueba">Prueba rapida</a>
+      <a href="#curiosidades">Curiosidades</a>
+      <a href="#tuneles">Tuneles</a>
+      <a href="#activo">Ruta activa</a>
+      <a href="#premios">Premios</a>
+    </div>
+    <div class="score-pill"><span id="score">0</span> ml</div>
+  </nav>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-copy">
+        <div class="kicker"><img class="spark" src="rosso-assets/Asset_3.png" alt=""> Rosa Gaseosa presenta</div>
+        <h1>Hoy no tienes que sentirlo todo.</h1>
+        <p class="lead">Elige una incomodidad. Recibe una respuesta rapida. Sigue bajando. ROSSO se adapta a tu felicidad en tiempo real.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#prueba">Quiero mi diagnostico</a>
+          <button class="button" data-dose="curioso" data-message="Curiosidad detectada. ROSSO recomienda una dosis pequena antes de pensar demasiado.">Solo estoy mirando</button>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Assets destacados de ROSSO">
+        <img class="corp-badge" src="rosso-assets/Asset_7.png" alt="Un producto de la familia ROSSO Corp">
+        <img class="float offer" src="rosso-assets/Asset_9.png" alt="Oferta exclusiva">
+        <img class="float hotline" src="rosso-assets/Asset_1.png" alt="01 800 ROSSO">
+        <img class="float sparkle" src="rosso-assets/Asset_3.png" alt="">
+      </div>
+    </section>
+
+    <div class="brand-strip" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>No estas cansado</span><span>Solo necesitas sabor</span><span>Respuesta instantanea</span><span>+25 ml de calma</span><span>Felicidad artificial</span><span>A tan solo 1,25</span>
+        <span>No estas cansado</span><span>Solo necesitas sabor</span><span>Respuesta instantanea</span><span>+25 ml de calma</span><span>Felicidad artificial</span><span>A tan solo 1,25</span>
+      </div>
+    </div>
+
+    <section class="section" id="prueba">
+      <div class="section-head">
+        <h2>Que te esta pesando hoy?</h2>
+        <p>Una pregunta corta. Una respuesta inmediata. Una recompensa pequena. Eso mantiene al visitante avanzando.</p>
+      </div>
+      <div class="quiz">
+        <div class="quiz-panel">
+          <span class="label">Diagnostico express</span>
+          <h3>Elige sin pensarlo mucho.</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-dose="rutina" data-result="Estas funcionando en automatico." data-copy="No estas roto. Solo repetiste el mismo dia demasiadas veces. ROSSO detecta cansancio invisible y recomienda una micro-recompensa antes de tomar decisiones importantes.">Todo se siente repetido</button>
+            <button class="quiz-option" data-dose="ruido" data-result="Tu cabeza tiene demasiadas ventanas abiertas." data-copy="Quieres calma, pero tambien estimulo. Quieres silencio, pero revisas otra vez. ROSSO recomienda cerrar una preocupacion y abrir un sabor.">No puedo apagar la cabeza</button>
+            <button class="quiz-option" data-dose="deseo" data-result="Estas buscando algo, pero no sabes que forma tiene." data-copy="A veces el antojo no es hambre. Es una senal buscando objeto. ROSSO recomienda elegir por color antes de explicar por que.">Quiero algo y no se que</button>
+            <button class="quiz-option" data-dose="escape" data-result="Quieres salir, pero llevas el sistema contigo." data-copy="Cambiar de lugar ayuda. Cambiar de bucle cuesta mas. ROSSO recomienda una pausa dulce mientras decides si esto es libertad o solo otro cuarto.">Necesito escapar un rato</button>
+          </div>
+        </div>
+
+        <div class="result-card" aria-live="polite">
+          <div class="result-content">
+            <span class="label">Respuesta ROSSO</span>
+            <h3 id="result-title">Tu dosis esta esperando.</h3>
+            <p id="result-copy">Toca una opcion. ROSSO convertira tu malestar en una frase facil de aceptar.</p>
+            <div class="meter" aria-label="Medidor de dosis">
+              <div class="meter-bar" id="meter-bar"></div>
+            </div>
+            <div class="reward-pop" id="reward-pop">
+              <img src="rosso-assets/Asset_6.png" alt="Compre ya">
+              <span id="reward-text">Recompensa desbloqueada</span>
+            </div>
+            <div class="audio-unlock" id="audio-unlock">
+              <strong>310 ml completados</strong>
+              <span>Archivo ROSSO liberado. Puedes abrir el enlace y descargar el audio.</span>
+              <a class="audio-link" href="https://drive.google.com/file/d/1J3qFsOwGdLQHyKKp0L6a9CthgMAidp-f/view?usp=drive_link" target="_blank" rel="noopener">Abrir audio</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark" id="curiosidades">
+      <div class="section-head">
+        <h2>Curiosidades que parecen hablar de ti.</h2>
+        <p>Preguntas cotidianas con respuestas cortas. No explican el mundo: lo vuelven sospechosamente familiar.</p>
+      </div>
+      <div class="curiosity-grid">
+        <article class="curiosity-card" data-curiosity data-dose="jardin" data-message="Curiosidad desbloqueada. Tu jardin interior acaba de recibir mantenimiento.">
+          <div>
+            <img src="rosso-assets/Asset_3.png" alt="">
+            <span class="label">Pregunta 01</span>
+            <h3>Por que las casas tienen jardin?</h3>
+            <p>Tal vez no quieres cesped. Tal vez quieres una prueba visible de que tu vida esta bajo control.</p>
+          </div>
+          <div class="curiosity-answer">Durante mucho tiempo, un jardin fue senal de opulencia: tierra que no producia comida, sino prestigio. Hoy tambien puede funcionar como simbolo de estabilidad emocional: una familia que puede cuidar plantas parece capaz de cuidarse a si misma.</div>
+        </article>
+
+        <article class="curiosity-card" data-curiosity data-dose="orden" data-message="Curiosidad desbloqueada. El orden tambien puede ser una bebida.">
+          <div>
+            <img src="rosso-assets/Asset_11.png" alt="">
+            <span class="label">Pregunta 02</span>
+            <h3>Por que queremos que todo se vea limpio?</h3>
+            <p>Porque el orden promete algo que casi nadie puede sostener: que nada se esta saliendo de lugar.</p>
+          </div>
+          <div class="curiosity-answer">Una casa limpia no solo habla de higiene. Tambien comunica disciplina, pertenencia y tranquilidad. A veces ordenamos el espacio para sentir, por unos minutos, que tambien ordenamos la mente.</div>
+        </article>
+
+        <article class="curiosity-card" data-curiosity data-dose="sonrisa" data-message="Curiosidad desbloqueada. Sonreir tambien puede ser protocolo social.">
+          <div>
+            <img src="rosso-assets/Asset_5.png" alt="">
+            <span class="label">Pregunta 03</span>
+            <h3>Por que sonreimos cuando no estamos bien?</h3>
+            <p>Porque la felicidad tambien es un idioma. Y a veces lo hablamos para que nadie haga mas preguntas.</p>
+          </div>
+          <div class="curiosity-answer">La sonrisa puede ser alegria, pero tambien contrato social. Dice: sigo funcionando, no te preocupes, pertenezco. ROSSO entiende ese gesto y lo convierte en sabor.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section orange" id="tuneles">
+      <div class="section-head">
+        <h2>Elige lo que siempre has querido sentir.</h2>
+        <p>Cada camino ofrece una promesa psicologica pequena: alivio, permiso, cuidado o sentido. La persona no lee una explicacion; se reconoce en una frase.</p>
+      </div>
+      <div class="path-grid">
+        <a class="path-card" href="#activo" data-path="antojo" data-message="Alivio desbloqueado. Por fin no tienes que explicar lo que quieres.">
+          <div>
+            <img class="path-sticker" src="rosso-assets/Asset_10.png" alt="">
+            <span class="label">Tunel 01</span>
+            <h3>Quiero desear algo sin tener que explicarlo.</h3>
+            <p>Para cuando estas cansado de justificar cada impulso y solo quieres elegir.</p>
+          </div>
+          <div class="arrow">-&gt;</div>
+        </a>
+        <a class="path-card" href="#activo" data-path="familia" data-message="Cuidado desbloqueado. Alguien entendio lo que necesitabas antes que tu.">
+          <div>
+            <img class="path-sticker" src="rosso-assets/Asset_7.png" alt="">
+            <span class="label">Tunel 02</span>
+            <h3>Quiero que alguien sepa que necesito sin pedirlo.</h3>
+            <p>Para cuando lo que buscas no es un producto, sino sentirte cuidado un segundo.</p>
+          </div>
+          <div class="arrow">-&gt;</div>
+        </a>
+        <a class="path-card" href="#activo" data-path="oferta" data-message="Permiso desbloqueado. Hoy puedes darte algo sin convertirlo en culpa.">
+          <div>
+            <img class="path-sticker" src="rosso-assets/Asset_9.png" alt="">
+            <span class="label">Tunel 03</span>
+            <h3>Quiero una excusa para darme algo ya.</h3>
+            <p>Para cuando no necesitas una razon profunda, solo permiso inmediato.</p>
+          </div>
+          <div class="arrow">-&gt;</div>
+        </a>
+        <a class="path-card" href="#activo" data-path="duda" data-message="Pausa desbloqueada. No tienes que resolver tu vida para seguir respirando.">
+          <div>
+            <img class="path-sticker" src="rosso-assets/Asset_11.png" alt="">
+            <span class="label">Tunel 04</span>
+            <h3>Quiero dejar de pensar por un momento.</h3>
+            <p>Para cuando entenderlo todo cansa mas que obedecer una respuesta simple.</p>
+          </div>
+          <div class="arrow">-&gt;</div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section dark" id="activo">
+      <div class="section-head">
+        <h2>Ruta activa.</h2>
+        <p>Cambia de tunel. Cada clic da una micro-respuesta, sube la dosis y deja una promesa nueva.</p>
+      </div>
+
+      <div class="choice-row" aria-label="Cambiar ruta">
+        <button class="choice active" data-select="antojo">Antojo</button>
+        <button class="choice" data-select="familia">Familia</button>
+        <button class="choice" data-select="oferta">Oferta</button>
+        <button class="choice" data-select="duda">Duda</button>
+      </div>
+
+      <article class="tunnel active" data-tunnel="antojo">
+        <div class="tunnel-stage">
+          <img class="tunnel-bg" src="rosso-assets/Asset_10.png" alt="">
+          <span class="label">Respuesta rapida</span>
+          <h3>No es hambre. Es una forma buscando color.</h3>
+          <p>Si no sabes que quieres, empieza por el sabor que mas ruido haga.</p>
+          <div class="micro-actions">
+            <button class="micro-button" data-dose="sabor" data-message="Elegiste por color. Buena decision: explicar arruina el impulso.">Elegir por color</button>
+            <button class="micro-button" data-dose="sabor" data-message="289 sabores disponibles para que tu deseo parezca una eleccion.">Ver 289 sabores</button>
+          </div>
+        </div>
+        <div class="tunnel-panel">
+          <div class="reward-card"><img src="rosso-assets/Asset_5.png" alt="Soda with Benefits"><h3>Tu respuesta</h3><p>Quieres una senal simple: algo brillante que decida por ti durante un segundo.</p></div>
+          <div class="reward-card"><img src="rosso-assets/Asset_3.png" alt=""><h3>Siguiente pista</h3><p>Cuando un producto te entiende demasiado rapido, no preguntes. Sigue.</p></div>
+        </div>
+      </article>
+
+      <article class="tunnel" data-tunnel="familia">
+        <div class="tunnel-stage">
+          <img class="tunnel-bg" src="rosso-assets/Asset_7.png" alt="">
+          <span class="label">Respuesta rapida</span>
+          <h3>Alguien ya sabe lo que necesitas.</h3>
+          <p>Tranquilo, carino. La solucion estaba en el cajon correcto.</p>
+          <div class="micro-actions">
+            <button class="micro-button" data-dose="recuerdo" data-message="Cajon abierto. Encontraste una memoria aprobada por ROSSO.">Abrir cajon</button>
+            <button class="micro-button" data-dose="recuerdo" data-message="La nostalgia sabe mejor cuando viene con garantia familiar.">Probar recuerdo</button>
+          </div>
+        </div>
+        <div class="tunnel-panel">
+          <div class="reward-card"><img src="rosso-assets/Asset_4.png" alt="ROSSO Corp"><h3>Tu respuesta</h3><p>No buscas solo sabor. Buscas que algo te cuide sin hacer preguntas.</p></div>
+          <div class="reward-card"><img src="rosso-assets/Asset_1.png" alt="01 800 ROSSO"><h3>Siguiente pista</h3><p>Si llamas, ROSSO responde antes de que sepas que ibas a pedir.</p></div>
+        </div>
+      </article>
+
+      <article class="tunnel" data-tunnel="oferta">
+        <div class="tunnel-stage">
+          <img class="tunnel-bg" src="rosso-assets/Asset_9.png" alt="">
+          <span class="label">Respuesta rapida</span>
+          <h3>Tu cerebro ama una recompensa pequena.</h3>
+          <p>Una oferta no arregla la vida. Pero por unos segundos parece que si.</p>
+          <div class="micro-actions">
+            <button class="micro-button" data-dose="oferta" data-message="Oferta desbloqueada. Tu urgencia acaba de recibir permiso visual.">Desbloquear oferta</button>
+            <button class="micro-button" data-dose="oferta" data-message="Compre hoy. Pregunte despues.">Compre hoy</button>
+          </div>
+        </div>
+        <div class="tunnel-panel">
+          <div class="reward-card"><img src="rosso-assets/Asset_8.png" alt="Compre hoy"><h3>Tu respuesta</h3><p>Necesitas sentir avance. Un boton grande tambien cuenta como destino.</p></div>
+          <div class="reward-card"><img src="rosso-assets/Asset_6.png" alt="Compre ya"><h3>Siguiente pista</h3><p>Si la felicidad esta en descuento, tal vez sea porque caduca rapido.</p></div>
+        </div>
+      </article>
+
+      <article class="tunnel" data-tunnel="duda">
+        <div class="tunnel-stage">
+          <img class="tunnel-bg" src="rosso-assets/Asset_11.png" alt="">
+          <span class="label">Respuesta rapida</span>
+          <h3>Eso que sientes podria ser conciencia.</h3>
+          <p>No te preocupes. ROSSO tambien tiene un producto para eso.</p>
+          <div class="micro-actions">
+            <button class="micro-button" data-dose="duda" data-message="Duda registrada. ROSSO esta preparando una respuesta mas comoda.">Seguir dudando</button>
+            <button class="micro-button" data-dose="duda" data-message="Reinicio suave. Nada paso. Vuelve a elegir una felicidad.">Reiniciar pensamiento</button>
+          </div>
+        </div>
+        <div class="tunnel-panel">
+          <div class="reward-card"><img src="rosso-assets/Asset_11.png" alt="Amoldate a tu felicidad"><h3>Tu respuesta</h3><p>Quieres despertar, pero tambien quieres que despertar no duela.</p></div>
+          <div class="reward-card"><img src="rosso-assets/Asset_3.png" alt=""><h3>Siguiente pista</h3><p>Si la salida se siente demasiado perfecta, revisa si todavia estas dentro.</p></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section" id="premios">
+      <div class="section-head">
+        <h2>Mas respuestas, menos explicacion.</h2>
+        <p>Esta parte reemplaza el texto de trasfondo por pequenas recompensas narrativas. El usuario se identifica y sigue porque cada bloque le devuelve algo.</p>
+      </div>
+      <div class="final-grid">
+        <article class="final-card feature">
+          <img src="rosso-assets/Asset_4.png" alt="ROSSO Corp">
+          <span class="label">Mensaje escondido</span>
+          <h3>El sistema no se explica. Te responde.</h3>
+          <p>La pagina debe sentirse como una maquina que detecta estados de animo y ofrece alivios absurdamente precisos.</p>
+        </article>
+        <article class="final-card">
+          <img src="rosso-assets/Asset_6.png" alt="Compre ya">
+          <span class="label">Loop de dopamina</span>
+          <h3>Toca. Recibe. Desbloquea. Repite.</h3>
+          <p>Ese es el ritmo: pregunta corta, respuesta breve, recompensa visual, siguiente camino. La critica aparece cuando el visitante nota que le gusto obedecer al anuncio.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div>
+        <h2>Ya casi eres feliz.</h2>
+        <p>Solo falta una respuesta mas. O una dosis mas. O tal vez las dos cosas sean lo mismo.</p>
+      </div>
+      <img class="cta-sticker" src="rosso-assets/Asset_6.png" alt="Compre ya">
+    </section>
+  </main>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const toast = document.querySelector(".toast");
+    const score = document.querySelector("#score");
+    const resultTitle = document.querySelector("#result-title");
+    const resultCopy = document.querySelector("#result-copy");
+    const meterBar = document.querySelector("#meter-bar");
+    const rewardPop = document.querySelector("#reward-pop");
+    const rewardText = document.querySelector("#reward-text");
+    const audioUnlock = document.querySelector("#audio-unlock");
+    let dose = 0;
+    let audioUnlocked = false;
+    let toastTimer;
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+
+    function addDose(message, title, copy) {
+      dose = Math.min(dose + 25, 310);
+      score.textContent = dose;
+      meterBar.style.width = (dose / 310 * 100) + "%";
+
+      if (title) resultTitle.textContent = title;
+      if (copy) resultCopy.textContent = copy;
+
+      rewardText.textContent = "+" + dose + " ml de claridad artificial";
+      rewardPop.classList.remove("show");
+      void rewardPop.offsetWidth;
+      rewardPop.classList.add("show");
+      if (dose >= 310 && !audioUnlocked) {
+        audioUnlocked = true;
+        audioUnlock.classList.add("show");
+        showToast("310 ml completados. Archivo de audio desbloqueado.");
+      } else {
+        showToast(message);
+      }
+      burst(message);
+    }
+
+    function burst(message) {
+      const words = dose >= 310 ? ["310 ml", "Audio", "Liberado", "ROSSO", "Abrir"] : ["+25 ml", "Correcto", "Sigue", "Desbloqueado", "ROSSO"];
+      for (let i = 0; i < 7; i++) {
+        const item = document.createElement("div");
+        item.className = "burst";
+        item.textContent = words[(Math.floor(dose / 25) + i) % words.length];
+        item.style.left = Math.random() * 76 + 10 + "vw";
+        item.style.top = Math.random() * 58 + 16 + "vh";
+        item.style.animationDelay = i * 45 + "ms";
+        document.body.appendChild(item);
+        setTimeout(() => item.remove(), 1100);
+      }
+    }
+
+    function selectTunnel(name) {
+      document.querySelectorAll("[data-tunnel]").forEach((item) => {
+        item.classList.toggle("active", item.dataset.tunnel === name);
+      });
+
+      document.querySelectorAll("[data-select]").forEach((item) => {
+        item.classList.toggle("active", item.dataset.select === name);
+      });
+    }
+
+    document.querySelectorAll("[data-toast]").forEach((item) => {
+      item.addEventListener("click", () => showToast(item.dataset.toast));
+    });
+
+    document.querySelectorAll("[data-dose]").forEach((item) => {
+      item.addEventListener("click", () => {
+        addDose(
+          item.dataset.message || "ROSSO acaba de darte una respuesta.",
+          item.dataset.result,
+          item.dataset.copy
+        );
+      });
+    });
+
+    document.querySelectorAll("[data-curiosity]").forEach((item) => {
+      item.addEventListener("click", () => {
+        item.classList.toggle("open");
+      });
+    });
+
+    document.querySelectorAll("[data-path]").forEach((item) => {
+      item.addEventListener("click", () => {
+        selectTunnel(item.dataset.path);
+        addDose(item.dataset.message || "Ruta desbloqueada.");
+      });
+    });
+
+    document.querySelectorAll("[data-select]").forEach((item) => {
+      item.addEventListener("click", () => {
+        selectTunnel(item.dataset.select);
+        addDose("Cambiaste de ruta. ROSSO ajusto tu felicidad.");
+      });
+    });
+  </script>
+</body>
+</html>
